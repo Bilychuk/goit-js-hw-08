@@ -80,10 +80,13 @@ const newImages = images
         </a>
         </li>`)
     .join("");
-    
+
 gallery.insertAdjacentHTML("afterbegin", newImages);
 
-const imageLink = document.getElementsByClassName('gallery-link');
-  imageLink.addEventListener('click', function(event) {
+const imageLinks = document.getElementsByClassName("gallery-image");
+for (let imageLink of imageLinks){
+   imageLink.addEventListener('click', (event) => {
     event.preventDefault();
   });
+}
+ 

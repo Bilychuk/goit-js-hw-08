@@ -33,9 +33,9 @@ body {
 .gallery-image {
   width: 360px;
   height: 200px;
+  transition: transform 0.25s;
 }
 .gallery-image:hover,
 .gallery-image:focus {
-  width: 376px;
-  height: 208px;
+  transform: scale(1.04);
 }

@@ -67,21 +67,28 @@ const images = [
 ];
 
 const gallery = document.querySelector(".gallery");
-const newImages = images
-    .map((image) =>
-        `<li class="gallery-item">
-        <a class="gallery-link" href="${image.original}">
-        <img
-         class="gallery-image"
-         src="${image.preview}"
-         data-source="${image.original}"
-         alt="${image.description}"
-        />
-        </a>
-        </li>`)
-    .join("");
 
-gallery.insertAdjacentHTML("afterbegin", newImages);
+function createImg({ preview, original, description }) {
+    const markup = `<li class="gallery-item">
+                    <a class="gallery-link" href="${original}">
+                    <img
+                    class="gallery-image"
+                    src="${preview}"
+                    data-source="${original}"
+                    alt="${description}"
+                    />
+                    </a>
+                    </li>`;
+    return markup;  
+}
+
+let markup = "";
+
+for (let image of images) {
+    markup += createImg(image);  
+}
+
+gallery.innerHTML = markup;
 
 const imageLinks = document.getElementsByClassName("gallery-image");
 for (let imageLink of imageLinks){
@@ -89,4 +96,22 @@ for (let imageLink of imageLinks){
     event.preventDefault();
   });
 }
- 
+
+gallery.addEventListener("click", selectImage);
+
+function selectImage(event) {
+    if (event.target.nodeName != "IMG") {
+        return;
+    }
+    const instance = basicLightbox.create(`
+    <div class="modal">
+        <img
+        src="${event.target.dataset.source}"
+        alt="${event.target.description}"
+        />
+    </a>
+    </div>
+`)
+instance.show()
+}
+

@@ -68,50 +68,48 @@ const images = [
 
 const gallery = document.querySelector(".gallery");
 
-function createImg({ preview, original, description }) {
-    const markup = `<li class="gallery-item">
-                    <a class="gallery-link" href="${original}">
-                    <img
-                    class="gallery-image"
-                    src="${preview}"
-                    data-source="${original}"
-                    alt="${description}"
-                    />
-                    </a>
-                    </li>`;
-    return markup;  
+function createImg(images) {
+  return images.map(({ preview, original, description }) =>
+            `<li class="gallery-item">
+            <a class="gallery-link" href="${original}">
+            <img
+            class="gallery-image"
+            src="${preview}"
+            data-source="${original}"
+            alt="${description}"
+            />
+            </a>
+            </li>`)
+        .join("");
 }
 
-let markup = "";
+gallery.innerHTML = createImg(images);
 
-for (let image of images) {
-    markup += createImg(image);  
-}
-
-gallery.innerHTML = markup;
-
-const imageLinks = document.getElementsByClassName("gallery-image");
-for (let imageLink of imageLinks){
-   imageLink.addEventListener('click', (event) => {
-    event.preventDefault();
-  });
-}
-
-gallery.addEventListener("click", selectImage);
+gallery.addEventListener('click', selectImage);
 
 function selectImage(event) {
-    if (event.target.nodeName != "IMG") {
+  event.preventDefault();
+    if (event.target === event.currentTarget) {
         return;
     }
     const instance = basicLightbox.create(`
     <div class="modal">
         <img
         src="${event.target.dataset.source}"
-        alt="${event.target.description}"
+        alt="photo"
         />
     </a>
     </div>
-`)
-instance.show()
-}
+    `);
 
+  instance.show()
+  
+  document.addEventListener('keydown', closeModalOnEsc);
+
+  function closeModalOnEsc(event) {
+    if (event.key === "Escape") {
+      instance.close();
+      document.removeEventListener('keydown', closeModalOnEsc);
+    }  
+  };
+}

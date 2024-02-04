@@ -68,7 +68,7 @@ const images = [
 
 const gallery = document.querySelector(".gallery");
 
-function createImg(images) {
+function createGalleryMarkup(images) {
   return images.map(({ preview, original, description }) =>
             `<li class="gallery-item">
             <a class="gallery-link" href="${original}">
@@ -83,33 +83,38 @@ function createImg(images) {
         .join("");
 }
 
-gallery.innerHTML = createImg(images);
+gallery.innerHTML = createGalleryMarkup(images);
 
 gallery.addEventListener('click', selectImage);
 
 function selectImage(event) {
   event.preventDefault();
-    if (event.target === event.currentTarget) {
+  const { className, dataset, alt } = event.target;
+    if (className !== "gallery-image") {
         return;
     }
     const instance = basicLightbox.create(`
     <div class="modal">
         <img
-        src="${event.target.dataset.source}"
-        alt="photo"
+        src="${dataset.source}"
+        alt="${alt}"
         />
     </a>
     </div>
-    `);
-
+    `,
+      {
+        onShow: () => {
+          document.addEventListener('keydown', closeModalOnEsc);
+      },
+        onClose: () => {
+          document.removeEventListener('keydown', closeModalOnEsc);
+      }
+    });
   instance.show()
-  
-  document.addEventListener('keydown', closeModalOnEsc);
 
   function closeModalOnEsc(event) {
     if (event.key === "Escape") {
-      instance.close();
-      document.removeEventListener('keydown', closeModalOnEsc);
+      instance.close(); 
     }  
   };
 }
